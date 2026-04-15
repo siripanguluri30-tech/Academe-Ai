@@ -1,0 +1,306 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .phone-wrap { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 24px 16px; display: flex; justify-content: center; }
+  .phone { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 28px; width: 360px; min-height: 640px; overflow: hidden; display: flex; flex-direction: column; }
+  .topbar { background: #EEEDFE; padding: 16px 20px 14px; }
+  .topbar-label { font-size: 11px; font-weight: 500; color: #534AB7; letter-spacing: 0.06em; text-transform: uppercase; }
+  .topbar h1 { font-size: 20px; font-weight: 500; color: #26215C; margin-top: 2px; }
+  .topbar p { font-size: 13px; color: #534AB7; margin-top: 2px; }
+  .screen { flex: 1; display: flex; flex-direction: column; }
+  .screen-inner { padding: 16px 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+
+  .setup-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+  .setup-card label { font-size: 12px; color: var(--color-text-secondary); display: block; margin-bottom: 6px; }
+  .setup-card select, .setup-card input[type=text] { width: 100%; font-size: 14px; padding: 8px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-primary); outline: none; }
+  .btn-primary { width: 100%; padding: 12px; border-radius: var(--border-radius-md); background: #534AB7; color: #EEEDFE; font-size: 15px; font-weight: 500; border: none; cursor: pointer; }
+  .btn-primary:hover { background: #3C3489; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .lesson-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+  .lesson-card .lc-label { font-size: 11px; font-weight: 500; color: #534AB7; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .lesson-card .lc-body { font-size: 14px; color: var(--color-text-primary); line-height: 1.65; }
+  .lesson-card .lc-body b { font-weight: 500; }
+
+  .quiz-card { background: #EEEDFE; border-radius: var(--border-radius-lg); padding: 14px; }
+  .quiz-card .q-label { font-size: 11px; font-weight: 500; color: #534AB7; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .quiz-card .q-text { font-size: 14px; font-weight: 500; color: #26215C; margin-bottom: 10px; }
+  .quiz-option { display: block; width: 100%; text-align: left; padding: 9px 12px; margin-bottom: 7px; border-radius: var(--border-radius-md); border: 0.5px solid #AFA9EC; background: var(--color-background-primary); font-size: 13px; color: #3C3489; cursor: pointer; }
+  .quiz-option:last-child { margin-bottom: 0; }
+  .quiz-option.correct { background: #EAF3DE; border-color: #639922; color: #27500A; }
+  .quiz-option.wrong { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; }
+  .quiz-option:disabled { cursor: default; }
+
+  .feedback { font-size: 13px; margin-top: 8px; font-weight: 500; }
+  .feedback.good { color: #3B6D11; }
+  .feedback.bad { color: #A32D2D; }
+
+  .plan-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+  .plan-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .plan-row:last-child { border-bottom: none; }
+  .plan-day { font-size: 11px; font-weight: 500; color: #534AB7; min-width: 44px; padding-top: 2px; }
+  .plan-topic { font-size: 13px; color: var(--color-text-primary); line-height: 1.4; }
+
+  .loading { display: flex; align-items: center; gap: 8px; padding: 14px; font-size: 13px; color: var(--color-text-secondary); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #7F77DD; animation: pulse 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+
+  .nav { display: flex; border-top: 0.5px solid var(--color-border-tertiary); }
+  .nav-btn { flex: 1; padding: 12px 0; font-size: 12px; color: var(--color-text-secondary); background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .nav-btn.active { color: #534AB7; }
+  .nav-icon { width: 18px; height: 18px; }
+
+  .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); padding-bottom: 4px; }
+  .streaks { display: flex; gap: 8px; }
+  .streak-chip { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 12px; font-size: 12px; color: var(--color-text-secondary); flex: 1; text-align: center; }
+  .streak-chip strong { display: block; font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+  .next-btn { padding: 10px; border-radius: var(--border-radius-md); background: none; border: 0.5px solid var(--color-border-secondary); font-size: 13px; color: var(--color-text-primary); cursor: pointer; width: 100%; margin-top: 4px; }
+  .next-btn:hover { background: var(--color-background-secondary); }
+
+  .error-msg { font-size: 13px; color: var(--color-text-danger); background: var(--color-background-danger); border-radius: var(--border-radius-md); padding: 10px 12px; }
+</style>
+
+<h2 class="sr-only">AcademeAI — personalized AI learning assistant for students</h2>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="topbar">
+      <div class="topbar-label">SDG 4 — Quality Education</div>
+      <h1>AcademeAI</h1>
+      <p>Your personal AI tutor</p>
+    </div>
+
+    <div class="screen" id="screen-home">
+      <div class="screen-inner">
+        <div class="streaks">
+          <div class="streak-chip"><strong id="streak-days">0</strong>day streak</div>
+          <div class="streak-chip"><strong id="lessons-done">0</strong>lessons done</div>
+        </div>
+        <div class="setup-card">
+          <label>What do you want to learn?</label>
+          <input type="text" id="topic-input" placeholder="e.g. Photosynthesis, Fractions, World War II" />
+        </div>
+        <div class="setup-card">
+          <label>Your grade / level</label>
+          <select id="level-select">
+            <option value="Grade 6-8 (middle school)">Grade 6–8</option>
+            <option value="Grade 9-10 (high school)" selected>Grade 9–10</option>
+            <option value="Grade 11-12 (advanced high school)">Grade 11–12</option>
+            <option value="Undergraduate / college">Undergraduate</option>
+          </select>
+        </div>
+        <div class="setup-card">
+          <label>Learning goal</label>
+          <select id="goal-select">
+            <option value="understand the basics">Understand the basics</option>
+            <option value="prepare for an exam" selected>Prepare for an exam</option>
+            <option value="go deep and master it">Go deep and master it</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="start-btn" onclick="startLesson()">Start learning</button>
+        <div id="error-box" style="display:none;" class="error-msg"></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9"/><rect x="10" y="2" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="2" y="10" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/><rect x="10" y="10" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.4"/></svg>
+          Home
+        </button>
+        <button class="nav-btn" onclick="showPlanScreen()">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="2" rx="1" fill="currentColor" opacity="0.9"/><rect x="2" y="8" width="10" height="2" rx="1" fill="currentColor" opacity="0.5"/><rect x="2" y="13" width="7" height="2" rx="1" fill="currentColor" opacity="0.3"/></svg>
+          Study plan
+        </button>
+      </nav>
+    </div>
+
+    <div class="screen" id="screen-lesson" style="display:none;">
+      <div class="screen-inner" id="lesson-content">
+        <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Generating your lesson...</span></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn" onclick="backHome()">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><path d="M11 14L5 9l6-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+        <button class="nav-btn" id="quiz-nav-btn" onclick="showQuizSection()" style="display:none;">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v4M9 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Quiz me
+        </button>
+      </nav>
+    </div>
+
+    <div class="screen" id="screen-plan" style="display:none;">
+      <div class="screen-inner" id="plan-content">
+        <div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Building your study plan...</span></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn" onclick="backHome()">
+          <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><path d="M11 14L5 9l6-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentLesson = null;
+let currentQuiz = null;
+let streakDays = 3;
+let lessonsDone = 7;
+
+document.getElementById('streak-days').textContent = streakDays;
+document.getElementById('lessons-done').textContent = lessonsDone;
+
+function show(id) {
+  ['screen-home','screen-lesson','screen-plan'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'flex' : 'none';
+  });
+}
+
+function backHome() { show('screen-home'); }
+
+async function callClaude(prompt, systemPrompt) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!res.ok) throw new Error("API error " + res.status);
+  const data = await res.json();
+  return data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+async function startLesson() {
+  const topic = document.getElementById('topic-input').value.trim();
+  if (!topic) {
+    showError("Please enter a topic first.");
+    return;
+  }
+  const level = document.getElementById('level-select').value;
+  const goal = document.getElementById('goal-select').value;
+  document.getElementById('error-box').style.display = 'none';
+
+  show('screen-lesson');
+  document.getElementById('quiz-nav-btn').style.display = 'none';
+  document.getElementById('lesson-content').innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Generating your lesson...</span></div>';
+
+  try {
+    const system = `You are AcademeAI, a friendly tutor for students in underserved areas. Respond ONLY with a JSON object, no markdown fences, no extra text. Format:
+{"title":"short lesson title","intro":"1-2 sentence hook","sections":[{"heading":"heading","body":"2-3 sentence explanation"}],"keypoints":["point1","point2","point3"],"quiz":{"question":"a clear multiple choice question about the topic","options":["A. option","B. option","C. option","D. option"],"correct":0,"explanation":"why correct"}}
+Keep language clear, accessible, and encouraging. Max 3 sections. keypoints has exactly 3 items.`;
+    const prompt = `Topic: ${topic}\nLevel: ${level}\nGoal: ${goal}\nGenerate a short lesson with a quiz.`;
+    const raw = await callClaude(prompt, system);
+    const data = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    currentLesson = data;
+    currentQuiz = data.quiz;
+    renderLesson(data);
+    lessonsDone++;
+    document.getElementById('lessons-done').textContent = lessonsDone;
+  } catch(e) {
+    document.getElementById('lesson-content').innerHTML = '<div class="error-msg">Could not load lesson. Check your connection and try again.</div>';
+  }
+}
+
+function renderLesson(d) {
+  const sectionsHtml = d.sections.map(s => `
+    <div style="margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;">${s.heading}</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;">${s.body}</div>
+    </div>`).join('');
+  const kpHtml = d.keypoints.map(k => `
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:#7F77DD;margin-top:5px;flex-shrink:0;"></div>
+      <div style="font-size:13px;color:var(--color-text-primary);line-height:1.5;">${k}</div>
+    </div>`).join('');
+
+  document.getElementById('lesson-content').innerHTML = `
+    <div class="lesson-card">
+      <div class="lc-label">Lesson</div>
+      <div style="font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;">${d.title}</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:12px;">${d.intro}</div>
+      ${sectionsHtml}
+    </div>
+    <div class="lesson-card">
+      <div class="lc-label">Key takeaways</div>
+      ${kpHtml}
+    </div>
+    <button class="btn-primary" onclick="showQuizSection()">Take the quiz</button>
+  `;
+  document.getElementById('quiz-nav-btn').style.display = 'flex';
+}
+
+function showQuizSection() {
+  if (!currentQuiz) return;
+  const q = currentQuiz;
+  const optHtml = q.options.map((opt, i) => `
+    <button class="quiz-option" id="opt-${i}" onclick="answerQuiz(${i})">${opt}</button>`).join('');
+  document.getElementById('lesson-content').innerHTML = `
+    <div class="quiz-card">
+      <div class="q-label">Quick quiz</div>
+      <div class="q-text">${q.question}</div>
+      <div id="quiz-opts">${optHtml}</div>
+      <div class="feedback" id="quiz-feedback"></div>
+    </div>
+    <button class="next-btn" id="new-lesson-btn" style="display:none;" onclick="backHome()">Try another topic</button>
+  `;
+}
+
+function answerQuiz(chosen) {
+  const q = currentQuiz;
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.disabled = true);
+  opts[q.correct].classList.add('correct');
+  const fb = document.getElementById('quiz-feedback');
+  if (chosen === q.correct) {
+    fb.textContent = "Correct! " + q.explanation;
+    fb.className = "feedback good";
+  } else {
+    opts[chosen].classList.add('wrong');
+    fb.textContent = "Not quite. " + q.explanation;
+    fb.className = "feedback bad";
+  }
+  document.getElementById('new-lesson-btn').style.display = 'block';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function showPlanScreen() {
+  const topic = document.getElementById('topic-input').value.trim() || "general science and math";
+  const level = document.getElementById('level-select').value;
+  show('screen-plan');
+  document.getElementById('plan-content').innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Building your study plan...</span></div>';
+
+  try {
+    const system = `You are AcademeAI. Return ONLY a JSON object, no markdown: {"plan":[{"day":"Day 1","topic":"topic to study","duration":"20 min"},...],"title":"Study plan title"}. Create exactly 5 days. Be specific and practical.`;
+    const raw = await callClaude(`Create a 5-day study plan for: ${topic} at level: ${level}`, system);
+    const data = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const rowsHtml = data.plan.map(r => `
+      <div class="plan-row">
+        <div class="plan-day">${r.day}</div>
+        <div>
+          <div class="plan-topic">${r.topic}</div>
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">${r.duration}</div>
+        </div>
+      </div>`).join('');
+    document.getElementById('plan-content').innerHTML = `
+      <div class="section-title">${data.title}</div>
+      <div class="plan-card">${rowsHtml}</div>
+      <button class="btn-primary" onclick="backHome()">Start learning</button>
+    `;
+  } catch(e) {
+    document.getElementById('plan-content').innerHTML = '<div class="error-msg">Could not load plan. Try again.</div>';
+  }
+}
+</script>
